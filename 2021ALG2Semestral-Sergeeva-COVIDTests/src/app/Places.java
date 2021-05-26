@@ -19,16 +19,25 @@ public class Places {
     private final List<Place> listOfPlaces;
     private static int internalId = 0;
 
+    /**
+     * Při vytváření Places() vytvoří list testovácích míst, který pak budeme
+     * naplňovat
+     */
     public Places() {
         listOfPlaces = new ArrayList<>();
     }
 
+    /**
+     * Vrátí list testovácích míst
+     *
+     * @return
+     */
     public List<Place> getListOfPlaces() {
         return listOfPlaces;
     }
 
     /**
-     * Tato metoda načítá data ze soubru
+     * Tato metoda načítá data ze souboru
      *
      * @param fileWithAListOfPlaces
      * @param separator
@@ -129,7 +138,7 @@ public class Places {
      * @throws IOException
      */
     public void save(String resultFile) throws IOException {
-        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFile), true)))) {
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFile + ".txt"), true)))) {
             String s;
             for (Place place : listOfPlaces) {
                 s = String.format("%4d %90s %98s  %6b %6b %6b", place.getInternalID(), place.getName(), place.getAddress(), place.isPCR(), place.isAntigenic(), place.isDrive_in());

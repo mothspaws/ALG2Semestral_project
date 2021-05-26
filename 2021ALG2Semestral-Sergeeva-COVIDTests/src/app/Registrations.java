@@ -245,7 +245,7 @@ public class Registrations {
     }
 
     /**
-     * Metoda pro třídění rezervace podle datumu pro zvolené testovácí místo
+     * Třídění rezervace podle datumu pro zvolené testovácí místo
      *
      * @param internalID
      * @return
@@ -256,7 +256,7 @@ public class Registrations {
     }
 
     /**
-     * Metoda pro třídění rezervace podle jména pro zvolené testovácí místo
+     * Třídění rezervace podle jména pro zvolené testovácí místo
      *
      * @param internalID
      * @return
@@ -294,7 +294,7 @@ public class Registrations {
      * @throws IOException
      */
     public void saveRegistrations(String resultFile, Places places) throws IOException {
-        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFile), true)))) {
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFile + ".txt"), true)))) {
             pw.println("Všechny rezervace");
             String s = toStringRegistrations();
             pw.println(s);
@@ -310,7 +310,7 @@ public class Registrations {
      * @throws IOException
      */
     public void saveRegistrationsFor(int internalID, String resultFile, Places places) throws IOException {
-        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFile), true)))) {
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFile + ".txt"), true)))) {
             pw.println("Rezervace pro " + places.findPlaceByInternalID(internalID));
             String s = toStringRegistrationsFor(internalID);
             pw.println(s);

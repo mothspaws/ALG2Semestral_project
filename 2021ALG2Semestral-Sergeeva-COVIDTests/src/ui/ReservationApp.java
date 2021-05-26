@@ -2,12 +2,19 @@ package ui;
 
 import app.Places;
 import app.Registrations;
+import java.awt.Font;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import org.apache.pdfbox.exceptions.COSVisitorException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import utils.DateHaveAlreadyExistException;
 import utils.NameHaveAlreadyExistException;
 import utils.NameHaveNotExistException;
@@ -29,10 +36,13 @@ public class ReservationApp {
         do {
             printMenu();
             int option = loadingOption();
-            obsluhaVolby(option);
+            optionHandling(option);
         } while (!konecProgramu);
     }
 
+    /**
+     * Vapíše menu
+     */
     private static void printMenu() {
         System.out.println("            Co chcete udělat?");
         System.out.println("1. Vytvořit rezervace termínu testování");
@@ -51,6 +61,11 @@ public class ReservationApp {
         System.out.println("      Vítejte v rezervačním systému");
     }
 
+    /**
+     * Načítá volbu od uživatele
+     *
+     * @return
+     */
     private static int loadingOption() {
         int volba = -1;
         System.out.print("Zadejte zvolenou polozku menu: ");
@@ -64,8 +79,14 @@ public class ReservationApp {
         return volba;
     }
 
-    private static void obsluhaVolby(int volba) throws IOException {
-        switch (volba) {
+    /**
+     * Obsluhuje volbu uživatele
+     *
+     * @param choice
+     * @throws IOException
+     */
+    private static void optionHandling(int choice) throws IOException {
+        switch (choice) {
             case 0:
                 konecProgramu = true;
                 break;
@@ -93,14 +114,16 @@ public class ReservationApp {
             case 8:
                 findPlaces();
                 break;
-            case 9:
-
-                break;
             default:
                 System.out.println("Chybne zadana volba");
         }
     }
 
+    /**
+     * Rezervace pro zadané jméno
+     *
+     * @throws IOException
+     */
     public static void reserve() throws IOException {
         {
             System.out.println("Zadejte jméno a příjmení:");
@@ -149,17 +172,27 @@ public class ReservationApp {
         }
     }
 
+    /**
+     * Skupinivá rezervace
+     *
+     * @throws IOException
+     */
     public static void reserveForGroupe() throws IOException {
         System.out.println("Zadejte název souboru s daty:");
         String name = sc.next();
         try {
             reg.load(path + name, ";", true, places);
-            System.out.println(reg.toStringRegistrations());
+            System.out.println("Náčtení dat proběhlo úspěšně.");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * Aktualizuje termín na nový datum
+     *
+     * @throws IOException
+     */
     public static void updateTerm() throws IOException {
         System.out.println("Zadejte jméno a příjmení:");
         String nameOfPerson = sc.next() + " " + sc.next();
@@ -178,6 +211,9 @@ public class ReservationApp {
         }
     }
 
+    /**
+     * Vymaže termín
+     */
     public static void deleteTerm() {
         System.out.println("Zadejte jméno a příjmení:");
         String nameOfPerson = sc.next() + " " + sc.next();
@@ -199,6 +235,11 @@ public class ReservationApp {
         }
     }
 
+    /**
+     * Položka menu, která úkázuje uživazelovi seznam všech rezervací
+     *
+     * @throws IOException
+     */
     public static void showAllReservations() throws IOException {
         System.out.println("Chcete setřídit seznam?");
         if (sc.next().equalsIgnoreCase("ano")) {
@@ -219,10 +260,21 @@ public class ReservationApp {
         System.out.println("Chcete uložit nelezený seznam do souboru?");
         if (sc.next().equalsIgnoreCase("ano")) {
             System.out.println("Zadejte název souboru:");
-            reg.saveRegistrations(sc.next(), places);
+            String s = sc.next();
+            System.out.println("Chcete uložit do PDF?");
+            if (sc.next().equalsIgnoreCase("ano")) {
+                createPDF(s, reg);
+            } else {
+                reg.saveRegistrations(s, places);
+            }
         }
     }
 
+    /**
+     * Položka menu, která úkázuje uživazelovi seznam vybráných rezervací
+     *
+     * @throws IOException
+     */
     public static void showReservations() throws IOException {
         System.out.println("Zadejte ID testovácího místa:");
         int i = sc.nextInt();
@@ -232,10 +284,13 @@ public class ReservationApp {
             switch (sc.nextInt()) {
                 case 1:
                     System.out.println(reg.sortRegToStringByDate(i));
+                    break;
                 case 2:
                     System.out.println(reg.sortRegToStringByName(i));
+                    break;
                 default:
                     System.out.println("Chybne zadana volba");
+                    break;
             }
         } else {
             System.out.println(reg.toStringRegistrationsFor(i));
@@ -243,10 +298,21 @@ public class ReservationApp {
         System.out.println("Chcete uložit nelezený seznam do souboru?");
         if (sc.next().equalsIgnoreCase("ano")) {
             System.out.println("Zadejte název souboru:");
-            reg.saveRegistrationsFor(i, sc.next(), places);
+            String s = sc.next();
+            System.out.println("Chcete uložit do PDF?");
+            if (sc.next().equalsIgnoreCase("ano")) {
+                createPDF(s, reg);
+            } else {
+                reg.saveRegistrationsFor(i, s, places);
+            }
         }
     }
 
+    /**
+     * Položka menu, která vyhledává místa
+     *
+     * @throws IOException
+     */
     public static void findPlaces() throws IOException {
         Places filteredPlaces = new Places();
         System.out.println("Napište název svého města:");
@@ -268,6 +334,60 @@ public class ReservationApp {
         if (sc.next().equalsIgnoreCase("ano")) {
             System.out.println("Zadejte název souboruc");
             filteredPlaces.save(sc.next());
+        }
+    }
+
+    /**
+     * Vytvoří PDF soubor se seznamem rezervací
+     *
+     * @param nameOfFile
+     * @param reg
+     */
+    public static void createPDF(String nameOfFile, Registrations reg) {
+        String[] splited = reg.toStringRegistrations().split("\n");
+        String filename = nameOfFile + ".pdf";
+        int ir = splited.length;
+        try {
+            PDDocument doc = new PDDocument();
+            PDDocumentInformation pdd = doc.getDocumentInformation();
+            //autor
+            pdd.setAuthor("COVID application");
+            //title
+            pdd.setTitle("Places");
+            //creator
+            pdd.setCreator("PDF Examples");
+            //subject 
+            pdd.setSubject("Places of testing");
+            for (int j = 0; j < ir; j++) {
+                int jj = j + 49;
+                if (jj >= ir) {
+                    jj = ir;
+                }
+                if (j % 49 == 0) {
+                    int m = 725;
+                    PDPage page = new PDPage();
+                    doc.addPage(page);
+                    PDPageContentStream content = new PDPageContentStream(doc, page);
+                    content.beginText();
+                    content.setFont(PDType1Font.HELVETICA, 12);
+                    content.moveTextPositionByAmount(250, 750);
+                    content.drawString("Seznam registrací");
+                    content.endText();
+                    for (int i = j; i < jj; i++) {
+                        content.beginText();
+                        content.moveTextPositionByAmount(70, m);
+                        content.drawString(splited[i]);
+                        m -= 15;
+                        content.endText();
+                    }
+                    content.close();
+                }
+            }
+            doc.save(filename);
+            doc.close();
+            System.out.println("PDF vytvořen v: " + System.getProperty("user.dir"));
+        } catch (IOException | COSVisitorException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

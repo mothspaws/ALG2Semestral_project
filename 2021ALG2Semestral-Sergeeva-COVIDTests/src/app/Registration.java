@@ -14,49 +14,75 @@ public class Registration {
     String nameOfPerson;
     LocalDate reservationDate;
     Place place;
-/**
- * 
- * @param nameOfPerson
- * @param reservationDate
- * @param place 
- */
+
+    /**
+     * Registrace pro datum, zadaný ve foermě textového řetězce
+     *
+     * @param nameOfPerson
+     * @param reservationDate
+     * @param place
+     */
     public Registration(String nameOfPerson, String reservationDate, Place place) {
         this.nameOfPerson = nameOfPerson;
         this.reservationDate = LocalDate.parse(reservationDate, dtf);
         this.place = place;
     }
-/**
- * 
- * @param nameOfPerson
- * @param reservationDate
- * @param place 
- */
+
+    /**
+     * Registrace pro datum, zadaný ve foermě datumu
+     *
+     * @param nameOfPerson
+     * @param reservationDate
+     * @param place
+     */
     public Registration(String nameOfPerson, LocalDate reservationDate, Place place) {
         this.nameOfPerson = nameOfPerson;
         this.reservationDate = reservationDate;
         this.place = place;
     }
 
+    /**
+     * Getter pro testovácí místo, pro které je vytvořena tato rezervace
+     *
+     * @return
+     */
     public Place getPlace() {
         return place;
     }
 
+    /**
+     * Getter pro jméno člověka, pro kterého je vytvořena tato rezervace
+     *
+     * @return
+     */
     public String getNameOfPerson() {
         return nameOfPerson;
     }
 
+    /**
+     * Getter pro datum, pro který je vytvořena tato rezervace
+     *
+     * @return
+     */
     public LocalDate getReservationDate() {
         return reservationDate;
     }
 
+    /**
+     * Pomocná metoda pro updateRegistrationDate(), která nastáví nový datum pro
+     * existujicí rezervace
+     *
+     * @param reservationDate
+     */
     public void setReservationDate(String reservationDate) {
         this.reservationDate = LocalDate.parse(reservationDate, dtf);
     }
 
-/**
- * Přepsana metoda toString() pro výpis objektu typu Registration
- * @return 
- */
+    /**
+     * Přepsana metoda toString() pro výpis objektu typu Registration
+     *
+     * @return
+     */
     @Override
     public String toString() {
         String s, date;

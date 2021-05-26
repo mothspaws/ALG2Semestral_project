@@ -9,6 +9,16 @@ import java.util.List;
  */
 public class TextFileReader implements ReaderInterface {
 
+    /**
+     * Metota, která vytváří list textových řetězců s daty
+     *
+     * @param file
+     * @param separator
+     * @param header
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     @Override
     public List<String[]> readFile(File file, String separator, boolean header) throws FileNotFoundException, IOException {
         List<String[]> data = new ArrayList<>();
