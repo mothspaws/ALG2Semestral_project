@@ -138,15 +138,11 @@ public class Registrations {
             throw new NameHaveNotExistException("Pro zadaného uživatele není rezervace, kterou je možné změnit");
         } catch (NameHaveAlreadyExistException a) {
             for (Registration registration : registrations) {
-                try {
-                    existenceOfDate(reservationDate, registration.getPlace());
-                    if (registration.getPlace().getInternalID() == internalId) {
-                        if (registration.getNameOfPerson().equals(nameOfPerson)) {
-                            registration.setReservationDate(reservationDate);
-                        }
+                existenceOfDate(reservationDate, registration.getPlace());
+                if (registration.getPlace().getInternalID() == internalId) {
+                    if (registration.getNameOfPerson().equals(nameOfPerson)) {
+                        registration.setReservationDate(reservationDate);
                     }
-                } catch (DateHaveAlreadyExistException e) {
-                    break;
                 }
             }
         }
