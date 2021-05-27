@@ -34,13 +34,14 @@ public class staticMethods {
         System.out.println("            Co chcete udělat?");
         System.out.println("1. Vytvořit rezervace termínu testování");
         System.out.println("2. Skupinová rezervace tremínů");
-        System.out.println("3. Upravit již existující termín");
+        System.out.println("3. Upravit existující termín");
         System.out.println("4. Vymazat termín testování");
         System.out.println("5. Prohlednout seznam testovácích míst");
         System.out.println("6. Prohlednout seznam všech rezervací");
         System.out.println("7. Prohlednout seznam rezervací pro zvolené místo");
         System.out.println("8. Najít testovácí místo podle města a podminky");
         System.out.println("0. Konec programu");
+        System.out.print("Zadejte zvolenou polozku menu: ");
     }
 
     public static void getInformationAboutPlaces() throws IOException {
@@ -54,16 +55,15 @@ public class staticMethods {
      * @return
      */
     public static int loadingOption() {
-        int volba = -1;
-        System.out.print("Zadejte zvolenou polozku menu: ");
+        int option = -1;
         try {
-            volba = sc.nextInt();
+            option = sc.nextInt();
         } catch (InputMismatchException e) {
-            volba = -1;
+            option = -1;
         } finally {
             sc.nextLine();
         }
-        return volba;
+        return option;
     }
 
     /**
@@ -115,11 +115,10 @@ public class staticMethods {
         {
             System.out.println("Zadejte jméno a příjmení:");
             String nameOfPerson = sc.next() + " " + sc.next();
-            System.out.println("Zadejte datum:");
+            System.out.println("Zadejte datum dd.mm.yyyy:");
             String date = sc.next();
             System.out.println("Znáte ID testovácího místa?");
-            String answer = sc.next();
-            if (answer.equalsIgnoreCase("ano")) {
+            if (yesNoAnswer(sc.next()).equalsIgnoreCase("ano")) {
                 System.out.println("Zadejte ID testovácího místa:");
                 int ID = sc.nextInt();
                 try {
@@ -129,13 +128,15 @@ public class staticMethods {
                     System.out.println(e.getMessage());
                 } catch (DateHaveAlreadyExistException e) {
                     System.out.println(e.getMessage());
+                } catch (NoSuchElementException e) {
+                    System.out.println(e.getMessage());
                 }
             } else {
                 Places filteredPlaces = new Places();
                 System.out.println("Napište název svého města.");
                 String town = sc.next();
                 System.out.format("%16s\n%s\n%s\n%s\n", "Zvolte podminku", "1. PCR", "2. Antigenic", "3. Drive in");
-                switch (sc.nextInt()) {
+                switch (loadingOption()) {
                     case 1:
                         filteredPlaces = places.filterPlaces(town, "PCR");
                         break;
@@ -148,7 +149,7 @@ public class staticMethods {
                 }
                 System.out.println(filteredPlaces.printPlaces());
                 System.out.println("Napište ID zvoleného testovácího místa:");
-                int ID = sc.nextInt();
+                int ID = loadingOption();
                 try {
                     reg.setRegistration(nameOfPerson, date, places.findPlaceByInternalID(ID));
                     System.out.println("Rezervace vytvořena úspěšně.");
@@ -165,7 +166,7 @@ public class staticMethods {
      * @throws IOException
      */
     public static void reserveForGroupe() throws IOException {
-        System.out.println("Zadejte název souboru s daty:");
+        System.out.println("Zadejte název souboru s daty ve formě nazev.type_souboru:");
         String name = sc.next();
         try {
             reg.load(path + name, ";", true, places);
@@ -186,7 +187,7 @@ public class staticMethods {
         System.out.println("Zadejte nový datum dd.mm.yyyy:");
         String date = sc.next();
         System.out.println("Zadejte ID testovácího místa:");
-        int internalID = sc.nextInt();
+        int internalID = loadingOption();
 
         try {
             reg.updateRegistrationDate(nameOfPerson, date, internalID);
@@ -205,7 +206,7 @@ public class staticMethods {
         System.out.println("Zadejte jméno a příjmení:");
         String nameOfPerson = sc.next() + " " + sc.next();
         System.out.println("Zadejte ID testovácího místa:");
-        int internalID = sc.nextInt();
+        int internalID = loadingOption();
         if (reg.deleteRegistrationForPerson(nameOfPerson, internalID)) {
             System.out.println("Termín byl uspěšně vymazan.");
         } else {
@@ -216,7 +217,7 @@ public class staticMethods {
     public static void showAllPlaces() throws IOException {
         System.out.println(places.printPlaces());
         System.out.println("Chcete uložit nelezený seznam do souboru?");
-        if (sc.next().equalsIgnoreCase("ano")) {
+        if (yesNoAnswer(sc.next()).equalsIgnoreCase("ano")) {
             System.out.println("Zadejte název souboru:");
             places.save(sc.next());
         }
@@ -229,9 +230,9 @@ public class staticMethods {
      */
     public static void showAllReservations() throws IOException {
         System.out.println("Chcete setřídit seznam?");
-        if (sc.next().equalsIgnoreCase("ano")) {
+        if (yesNoAnswer(sc.next()).equalsIgnoreCase("ano")) {
             System.out.println("Jak chcete setřídit seznam?\n1. Podle datumu\n2. Podle jména");
-            switch (sc.nextInt()) {
+            switch (loadingOption()) {
                 case 1:
                     System.out.println(reg.sortRegToStringByDate());
                     break;
@@ -245,11 +246,12 @@ public class staticMethods {
             System.out.println(reg.toStringRegistrations());
         }
         System.out.println("Chcete uložit nelezený seznam do souboru?");
-        if (sc.next().equalsIgnoreCase("ano")) {
-            System.out.println("Zadejte název souboru:");
+        if (yesNoAnswer(sc.next()).equalsIgnoreCase("ano")) {
+            System.out.println("Zadejte název souboru bez typu:");
             String s = sc.next();
-            System.out.println("Chcete uložit do PDF?");
-            if (sc.next().equalsIgnoreCase("ano")) {
+            System.out.println("Chcete uložit do PDF? ano/ne");
+            String a = yesNoAnswer(sc.next());
+            if (a.equalsIgnoreCase("ano")) {
                 createPDF(s, reg);
             } else {
                 reg.saveRegistrations(s, places);
@@ -264,11 +266,11 @@ public class staticMethods {
      */
     public static void showReservations() throws IOException {
         System.out.println("Zadejte ID testovácího místa:");
-        int i = sc.nextInt();
+        int i = loadingOption();
         System.out.println("Chcete setřídit seznam?");
-        if (sc.next().equalsIgnoreCase("ano")) {
+        if (yesNoAnswer(sc.next()).equalsIgnoreCase("ano")) {
             System.out.println("Jak chcete setřídit seznam?\n1. Podle datumu\n2. Podle jména");
-            switch (sc.nextInt()) {
+            switch (loadingOption()) {
                 case 1:
                     System.out.println(reg.sortRegToStringByDate(i));
                     break;
@@ -283,11 +285,11 @@ public class staticMethods {
             System.out.println(reg.toStringRegistrationsFor(i));
         }
         System.out.println("Chcete uložit nelezený seznam do souboru?");
-        if (sc.next().equalsIgnoreCase("ano")) {
+        if (yesNoAnswer(sc.next()).equalsIgnoreCase("ano")) {
             System.out.println("Zadejte název souboru:");
             String s = sc.next();
             System.out.println("Chcete uložit do PDF?");
-            if (sc.next().equalsIgnoreCase("ano")) {
+            if (yesNoAnswer(sc.next()).equalsIgnoreCase("ano")) {
                 createPDF(s, reg);
             } else {
                 reg.saveRegistrationsFor(i, s, places);
@@ -305,7 +307,7 @@ public class staticMethods {
         System.out.println("Napište název svého města:");
         String town = sc.next();
         System.out.format("%16s\n%s\n%s\n%s\n", "Zvolte podminku", "1. PCR", "2. Antigenic", "3. Drive in");
-        switch (sc.nextInt()) {
+        switch (loadingOption()) {
             case 1:
                 filteredPlaces = places.filterPlaces(town, "PCR");
                 break;
@@ -318,8 +320,8 @@ public class staticMethods {
         }
         System.out.println(filteredPlaces.printPlaces());
         System.out.println("Chcete uložit nelezený seznam do souboru?");
-        if (sc.next().equalsIgnoreCase("ano")) {
-            System.out.println("Zadejte název souboruc");
+        if (yesNoAnswer(sc.next()).equalsIgnoreCase("ano")) {
+            System.out.println("Zadejte název souboru bez typu:");
             filteredPlaces.save(sc.next());
         }
     }
@@ -378,4 +380,11 @@ public class staticMethods {
         }
     }
 
+    public static String yesNoAnswer(String a) {
+        while (!a.equalsIgnoreCase("ano") && !a.equalsIgnoreCase("ne")) {
+            System.out.println("Odpovězte ano/ne:");
+            a = sc.next();
+        }
+        return a;
+    }
 }

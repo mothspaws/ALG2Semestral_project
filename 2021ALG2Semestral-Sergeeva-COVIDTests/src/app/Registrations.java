@@ -106,7 +106,7 @@ public class Registrations {
      */
     public void existenceOfName(String nameOfPerson) {
         if (registrations.stream().anyMatch((registration) -> (registration.getNameOfPerson().equals(nameOfPerson))) == true) {
-            throw new NameHaveAlreadyExistException("Takový člověk existuje");
+            throw new NameHaveAlreadyExistException("Rezervace pro takového člověka existuje v systému");
         }
     }
 
@@ -120,7 +120,7 @@ public class Registrations {
     public void existenceOfDate(String reservationDate, Place place) throws IOException {
         LocalDate date = LocalDate.parse(reservationDate, dtf);
         if (registrations.stream().anyMatch((registration) -> (registration.getReservationDate().equals(date) && registration.getPlace().equals(place)))) {
-            throw new DateHaveAlreadyExistException("Takový datum existuje");
+            throw new DateHaveAlreadyExistException("Datum obsazen");
         }
     }
 
