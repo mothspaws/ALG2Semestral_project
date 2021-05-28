@@ -1,6 +1,7 @@
 package app;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
@@ -33,7 +34,7 @@ public class staticMethods {
     public static void printMenu() {
         System.out.println("            Co chcete udělat?");
         System.out.println("1. Vytvořit rezervace termínu testování");
-        System.out.println("2. Skupinová rezervace tremínů");
+        System.out.println("2. Skupinová rezervace termínů");
         System.out.println("3. Upravit existující termín");
         System.out.println("4. Vymazat termín testování");
         System.out.println("5. Prohlednout seznam testovácích míst");
@@ -120,7 +121,7 @@ public class staticMethods {
             System.out.println("Znáte ID testovácího místa?");
             if (yesNoAnswer(sc.next()).equalsIgnoreCase("ano")) {
                 System.out.println("Zadejte ID testovácího místa:");
-                int ID = sc.nextInt();
+                int ID = loadingOption();
                 try {
                     reg.setRegistration(nameOfPerson, date, places.findPlaceByInternalID(ID));
                     System.out.println("Reservace proběhla úspěšně.");
@@ -173,6 +174,8 @@ public class staticMethods {
             System.out.println("Náčtení dat proběhlo úspěšně.");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println("Soubor s takovým názvem neexistuje.");
         }
     }
 
