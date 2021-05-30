@@ -3,6 +3,7 @@ package app;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -22,15 +23,15 @@ import utils.NameHaveNotExistException;
  */
 public class staticMethods {
 
-    /**
-     * Vapíše menu
-     */
     public static Scanner sc = new Scanner(System.in);
     public static boolean konecProgramu = false;
     private static final String path = "data" + File.separator;
     static Places places = new Places();
     static Registrations reg = new Registrations();
 
+    /**
+     * Vapíše menu
+     */
     public static void printMenu() {
         System.out.println("            Co chcete udělat?");
         System.out.println("1. Vytvořit rezervace termínu testování");
@@ -131,6 +132,8 @@ public class staticMethods {
                     System.out.println(e.getMessage());
                 } catch (NoSuchElementException e) {
                     System.out.println(e.getMessage());
+                } catch (DateTimeParseException e) {
+                    System.out.println("Špatný format datumu");
                 }
             } else {
                 Places filteredPlaces = new Places();
@@ -156,6 +159,8 @@ public class staticMethods {
                     System.out.println("Rezervace vytvořena úspěšně.");
                 } catch (NoSuchElementException e) {
                     System.out.println("Testovácí místo s ID " + ID + " nenalezeno.");
+                } catch (DateTimeParseException e) {
+                    System.out.println("Špatný format datumu");
                 }
             }
         }
