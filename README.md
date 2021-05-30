@@ -8,7 +8,7 @@
 
 Informace o testovacích místech byly staženy z oficiální stránky Ministerstva zdravotnictví.
 
-<img width="810" alt="trueObject" src="https://user-images.githubusercontent.com/72342131/120101478-949b2880-c146-11eb-9670-c4fd9fee71fe.png">
+<img width="816" alt="object" src="https://user-images.githubusercontent.com/72342131/120102634-3c672500-c14c-11eb-935f-fcf145026014.png">
 
 #### 2.2. Popis vstupních a vystupních souborů
 
