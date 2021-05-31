@@ -6,7 +6,7 @@
 ### 2. Návrch řešení
 #### 2.1. Funkční specifikace
 
-Informace o testovacích místech byly staženy z oficiální stránky Ministerstva zdravotnictví.
+Informace o testovacích místech byly staženy z oficiální stránky Ministerstva zdravotnictví. cit. https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19
 
 <img width="816" alt="object" src="https://user-images.githubusercontent.com/72342131/120102634-3c672500-c14c-11eb-935f-fcf145026014.png">
 
